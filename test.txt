@@ -1,0 +1,73 @@
+package dao;
+
+import model.Customer;
+import java.sql.*;
+import java.util.*;
+
+public class CustomerDAO {
+    private final String jdbcURL;
+    private final String jdbcUser;
+    private final String jdbcPassword;
+
+    public CustomerDAO(String jdbcURL, String jdbcUser, String jdbcPassword) {
+        this.jdbcURL = jdbcURL;
+        this.jdbcUser = jdbcUser;
+        this.jdbcPassword = jdbcPassword;
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Không tìm thấy driver SQL Server", e);
+        }
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(jdbcURL, jdbcUser, jdbcPassword);
+    }
+
+    public List<Customer> getCustomers(int page, Map<String, String> filters) {
+        List<Customer> customers = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM customer WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        // Mapping cột database với tham số đầu vào
+        Map<String, String> columnMap = Map.of(
+            "name", "customer_name",
+            "sex", "sex",
+            "birthday", "birthday"
+        );
+
+        // Duyệt qua filters để tạo câu SQL
+        filters.forEach((key, value) -> {
+            if (value != null && !value.isEmpty() && columnMap.containsKey(key)) {
+                sql.append(" AND ").append(columnMap.get(key)).append(key.equals("name") ? " LIKE ?" : " = ?");
+                params.add(key.equals("name") ? "%" + value + "%" : value);
+            }
+        });
+
+        sql.append(" ORDER BY id OFFSET ? ROWS FETCH NEXT 10 ROWS ONLY");
+        params.add(page * 10);
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            // Gán giá trị vào PreparedStatement
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    customers.add(new Customer(
+                        rs.getInt("id"),
+                        rs.getString("customer_name"),
+                        rs.getString("sex"),
+                        rs.getString("birthday")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Lỗi truy vấn khách hàng", e);
+        }
+        return customers;
+    }
+}

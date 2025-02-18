@@ -1,0 +1,39 @@
+# database.properties
+db.url=jdbc:sqlserver://localhost:1433;databaseName=cruddb
+db.username=sa
+db.password=your_password
+db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
+db.pool.size=10
+
+# messages.properties
+message.login.failed=Invalid username or password
+message.customer.added=Customer added successfully
+message.customer.updated=Customer updated successfully
+message.customer.deleted=Customer deleted successfully
+message.validation.name.required=Name is required
+message.validation.birthday.invalid=Invalid birthday format
+
+# sql.properties
+sql.create.user.table=CREATE TABLE users ( \
+    id INT IDENTITY(1,1) PRIMARY KEY, \
+    username VARCHAR(50) NOT NULL UNIQUE, \
+    password VARCHAR(100) NOT NULL, \
+    created_at DATETIME DEFAULT GETDATE() \
+)
+
+sql.create.customer.table=CREATE TABLE customers ( \
+    id INT IDENTITY(1,1) PRIMARY KEY, \
+    name NVARCHAR(100) NOT NULL, \
+    sex CHAR(1) CHECK (sex IN ('M', 'F')), \
+    birthday DATE, \
+    email VARCHAR(100), \
+    created_at DATETIME DEFAULT GETDATE() \
+)
+
+sql.insert.default.user=INSERT INTO users (username, password) VALUES ('admin', 'admin123')
+
+sql.select.customers=SELECT * FROM customers WHERE 1=1
+sql.select.customers.count=SELECT COUNT(*) FROM customers WHERE 1=1
+sql.insert.customer=INSERT INTO customers (name, sex, birthday, email) VALUES (?, ?, ?, ?)
+sql.update.customer=UPDATE customers SET name=?, sex=?, birthday=?, email=? WHERE id=?
+sql.delete.customer=DELETE FROM customers WHERE id=?

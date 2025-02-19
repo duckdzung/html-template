@@ -1,0 +1,47 @@
+<struts-config>
+    <form-beans>
+        <form-bean name="userForm" type="com.example.forms.UserForm"/>
+        <form-bean name="customerForm" type="com.example.forms.CustomerForm"/>
+    </form-beans>
+
+    <action-mappings>
+        <action path="/login" 
+                type="com.example.actions.UserAction" 
+                name="userForm" 
+                scope="request" 
+                input="/jsp/T001.jsp">
+            <forward name="success" path="/jsp/T002.jsp"/>
+            <forward name="failure" path="/jsp/T001.jsp"/>
+        </action>
+
+        <action path="/logout" 
+                type="com.example.actions.UserAction" 
+                name="userForm" 
+                scope="request">
+            <forward name="success" path="/jsp/T001.jsp"/>
+        </action>
+
+        <action path="/addCustomer" 
+                type="com.example.actions.CustomerAction" 
+                name="customerForm" 
+                scope="request" 
+                input="/jsp/T003.jsp">
+            <forward name="success" path="/jsp/T002.jsp"/>
+        </action>
+
+        <action path="/editCustomer" 
+                type="com.example.actions.CustomerAction" 
+                name="customerForm" 
+                scope="request" 
+                input="/jsp/T003.jsp">
+            <forward name="success" path="/jsp/T002.jsp"/>
+        </action>
+
+        <action path="/deleteCustomers" 
+                type="com.example.actions.CustomerAction" 
+                name="customerForm" 
+                scope="request">
+            <forward name="success" path="/jsp/T002.jsp"/>
+        </action>
+    </action-mappings>
+</struts-config>

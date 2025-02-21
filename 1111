@@ -1,0 +1,22 @@
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
+
+public class FormUtils {
+    public static <T> T mapRequestToForm(HttpServletRequest request, Class<T> clazz) {
+        try {
+            T form = clazz.getDeclaredConstructor().newInstance(); // Tạo instance của form bean
+
+            Field[] fields = clazz.getDeclaredFields(); // Lấy tất cả thuộc tính của class
+            for (Field field : fields) {
+                field.setAccessible(true); // Cho phép truy cập private fields
+                String paramValue = request.getParameter(field.getName()); // Lấy giá trị từ request
+                if (paramValue != null && !paramValue.trim().isEmpty()) {
+                    field.set(form, paramValue); // Gán giá trị vào field của object
+                }
+            }
+            return form;
+        } catch (Exception e) {
+            throw new RuntimeException("Error mapping request to form: " + e.getMessage(), e);
+        }
+    }
+}

@@ -1,0 +1,21 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="myDao" class="com.example.dao.MyDao">
+        <!-- Configure data source and Hibernate session factory here -->
+    </bean>
+
+    <bean id="myService" class="com.example.service.MyService">
+        <property name="myDao" ref="myDao"/>
+    </bean>
+
+    <bean id="myController" class="com.example.controller.MyController">
+        <property name="myService" ref="myService"/>
+    </bean>
+
+    <bean id="actionServlet" class="org.apache.struts.action.ActionServlet">
+        <property name="config" value="/WEB-INF/struts-config.xml"/>
+    </bean>
+</beans>

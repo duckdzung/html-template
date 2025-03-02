@@ -1,0 +1,41 @@
+<struts-config>
+    <form-beans>
+        <form-bean name="myForm" type="com.example.model.MyModel" />
+    </form-beans>
+
+    <action-mappings>
+        <action path="/create"
+                type="com.example.controller.MyController"
+                name="myForm"
+                scope="request"
+                input="/jsp/myView.jsp">
+            <forward name="success" path="/jsp/myView.jsp"/>
+            <forward name="failure" path="/jsp/myView.jsp"/>
+        </action>
+        
+        <action path="/update"
+                type="com.example.controller.MyController"
+                name="myForm"
+                scope="request"
+                input="/jsp/myView.jsp">
+            <forward name="success" path="/jsp/myView.jsp"/>
+            <forward name="failure" path="/jsp/myView.jsp"/>
+        </action>
+        
+        <action path="/delete"
+                type="com.example.controller.MyController"
+                name="myForm"
+                scope="request">
+            <forward name="success" path="/jsp/myView.jsp"/>
+            <forward name="failure" path="/jsp/myView.jsp"/>
+        </action>
+        
+        <action path="/retrieve"
+                type="com.example.controller.MyController"
+                name="myForm"
+                scope="request">
+            <forward name="success" path="/jsp/myView.jsp"/>
+            <forward name="failure" path="/jsp/myView.jsp"/>
+        </action>
+    </action-mappings>
+</struts-config>
